@@ -19,7 +19,7 @@ class TestFunction(unittest.TestCase):
     # Create a proxy object to the trees container
     users_container = db_client.get_container_client(config.settings['users_container'])
 
-    def test_add_user(self):
+    def test_login_user(self):
         payload = {"username":  "3" , "password" : "3"}
 
 

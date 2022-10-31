@@ -19,12 +19,12 @@ class TestFunction(unittest.TestCase):
     # Create a proxy object to the trees container
     users_container = db_client.get_container_client(config.settings['users_container'])
 
-    def test_add_user(self):
-        payload = {"username":  "test" , "password" : "test1234"}
+    def test_update_user(self):
+        payload = {"username":  "test" , "add_to_games_played" : 10, "password" : "test1234"}
 
 
         resp = requests.get(
-                'https://coursework1-kii1u20.azurewebsites.net/api/RegisterPlayer?code=Zoj2OMERpQSwdEAGuADUyVFgeZZmOiY1tS0_bsuF-bxJAzFuLj6aMQ==', 
+                'https://coursework1-kii1u20.azurewebsites.net/api/UpdatePlayerInfo?code=JRGvt2pt07SkRJkS-n252x3O3_RFfZpwty_7SHXbm9AvAzFuhZ4XzQ==', 
                 json = payload)
 
 
