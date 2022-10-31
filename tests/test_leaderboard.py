@@ -20,15 +20,15 @@ class TestFunction(unittest.TestCase):
     users_container = db_client.get_container_client(config.settings['users_container'])
 
     def test_update_user(self):
-        payload = {"username":  "test" , "add_to_games_played" : 2, "password" : "test1234"}
+        payload = {"top":  1}
 
 
         resp = requests.get(
-                'https://coursework1-kii1u20.azurewebsites.net/api/UpdatePlayerInfo?code=JRGvt2pt07SkRJkS-n252x3O3_RFfZpwty_7SHXbm9AvAzFuhZ4XzQ==', 
+                'https://coursework1-kii1u20.azurewebsites.net/api/Leaderboard?code=8qbcprtb5ijblvvGaj-N2adifJy9pkqZ_EhApdyZN8vxAzFukpS3Lw==', 
                 json = payload)
 
-
-        self.assertEqual({"result" : True, 'msg' : 'OK'}, resp.json())
+        print(resp.json())
+        self.assertEqual([{'username': 'beta', 'score': 1, 'games_played': 0}], resp.json())
 
         # all_trees = list(self.users_container.read_all_items())
         # self.assertEqual(len(all_trees),1)

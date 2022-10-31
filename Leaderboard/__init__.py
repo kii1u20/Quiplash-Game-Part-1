@@ -25,30 +25,15 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     # Create a proxy object to the users container
     users_container = db_client.get_container_client(users_container)
 
-    user = req.get_json()
-    username = user['username']
-    password = user['password']
+    top = req.get_json()
+    numOfUsers = top['top']
 
     try:
-        user_exists = list(users_container.query_items(query= "SELECT * FROM users WHERE users.username = '{0}'".format(username), 
-                            enable_cross_partition_query=True))
-        if len(user_exists) == 0:
-            return func.HttpResponse(body=json.dumps({"result": False, "msg": "user does not exist" }), status_code=400)
-        else:
-            if user_exists[0]['password'] == password:
-                for op in user.keys():
-                    if op == 'add_to_games_played' and user[op] > 0:
-                        user_exists[0]['games_played'] += user[op]
-                    elif op == 'add_to_score' and user[op] > 0:
-                        user_exists[0]['total_score'] += user[op]
-                    elif op == "username" or op == "password":
-                        print("nothing") #think of a more elegant solution
-                    else:
-                        return func.HttpResponse(body=json.dumps({"result": False, "msg": "Value to add is <=0"}), status_code=400)
-                users_container.upsert_item(body=user_exists[0])
-                return func.HttpResponse(body=json.dumps({"result": True, "msg": "OK"}), status_code=200)
-            else:
-                return func.HttpResponse(body=json.dumps({"result": False, "msg": "wrong password"}), status_code=400)
+        leaderboard = list(users_container.query_items(query=
+            "SELECT TOP {0} c.username, c.total_score as {1}, c.games_played FROM c ORDER BY c.total_score DESC, c.username ASC".format(numOfUsers, "score"), 
+            enable_cross_partition_query=True))
+        print(leaderboard)
+        return func.HttpResponse(body = json.dumps(leaderboard), status_code=200)
     except exceptions.CosmosHttpResponseError as e:
             print(e.message)
             return func.HttpResponse("", status_code=404)
