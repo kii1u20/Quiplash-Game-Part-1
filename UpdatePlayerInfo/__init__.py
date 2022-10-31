@@ -29,15 +29,6 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     username = user['username']
     password = user['password']
 
-    operations = {}
-    if 'add_to_games_played' in user.keys() and 'add_to_score' in user.keys():
-        operations['add_to_games_played'] = user['add_to_games_played']
-        operations['add_to_score'] = user['add_to_score']
-    elif 'add_to_games_played' in user.keys():
-        operations['add_to_games_played'] = user['add_to_games_played']
-    elif 'add_to_score' in user.keys():
-        operations['add_to_score'] = user['add_to_score']
-
     try:
         user_exists = list(users_container.query_items(query= "SELECT * FROM users WHERE users.username = '{0}'".format(username), 
                             enable_cross_partition_query=True))
@@ -45,11 +36,13 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             return func.HttpResponse(body=json.dumps({"result": False, "msg": "user does not exist" }), status_code=400)
         else:
             if user_exists[0]['password'] == password:
-                for op in operations.keys():
-                    if op == 'add_to_games_played' and operations[op] > 0:
-                        user_exists[0]['games_played'] += operations[op]
-                    elif op == 'add_to_score' and operations[op] > 0:
-                        user_exists[0]['total_score'] += operations[op]
+                for op in user.keys():
+                    if op == 'add_to_games_played' and user[op] > 0:
+                        user_exists[0]['games_played'] += user[op]
+                    elif op == 'add_to_score' and user[op] > 0:
+                        user_exists[0]['total_score'] += user[op]
+                    elif op == "username" or op == "password":
+                        print("nothing") #think of a more elegant solution
                     else:
                         return func.HttpResponse(body=json.dumps({"result": False, "msg": "Value to add is <=0"}), status_code=400)
                 users_container.upsert_item(body=user_exists[0])
