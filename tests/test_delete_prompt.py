@@ -20,11 +20,11 @@ class TestFunction(unittest.TestCase):
     users_container = db_client.get_container_client(config.settings['users_container'])
 
     def test_add_user(self):
-        payload = {"id": 4, "text": "This prompt has to more than 30 characters", "username" : "alpha" , "password": "test1234"}
+        payload = {"id": 4, "username" : "alpha" , "password": "test1234"}
 
 
         resp = requests.get(
-                'https://coursework1-kii1u20.azurewebsites.net/api/EditPrompt?code=XZcwcdCqnz4CfI7lpxzIpqxfkzqVu_WRtugi0-eo1EZEAzFusSO6Cw==', 
+                'https://coursework1-kii1u20.azurewebsites.net/api/DeletePrompt?code=TdoHDx5enN4BRLiwfvuzUf1lJqMrFi0mctIaZFIgvrgvAzFujUR0IQ==', 
                 json = payload)
 
 

@@ -33,30 +33,23 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     prompt = req.get_json()
     username = prompt['username']
     password = prompt['password']
-    text = prompt['text']
     id = prompt['id']
     
     # return func.HttpResponse("", status_code=404)
     try:
-        prompt_exist = list(prompts_container.query_items(query= "SELECT * FROM c WHERE c.username = '{0}' AND c.text = '{1}'".format(username, text), 
-                            enable_cross_partition_query=True))
         user_exists = list(users_container.query_items(query= "SELECT * FROM c WHERE c.username = '{0}'".format(username), enable_cross_partition_query = True))
-        prompt_id_exists = list(prompts_container.query_items(query= "SELECT * FROM c WHERE c.id = '{0}'".format(id), enable_cross_partition_query = True))
+        prompt_exists_id = list(prompts_container.query_items(query= "SELECT * FROM c WHERE c.id = '{0}'".format(id), enable_cross_partition_query = True))
         if len(user_exists) == 0 :
             return func.HttpResponse(body=json.dumps({"result": False, "msg": "bad username or password"}), status_code=409)
         elif user_exists[0]['password'] != password:
             return func.HttpResponse(body=json.dumps({"result": False, "msg": "bad username or password"}), status_code=409)
-        elif len(prompt_id_exists) == 0:
+        elif len(prompt_exists_id) == 0:
             return func.HttpResponse(body=json.dumps({"result": False, "msg": "prompt id does not exist"}), status_code=409)
-        elif len(prompt_exist) != 0:
-            return func.HttpResponse(body=json.dumps({"result": False, "msg": "This user already has a prompt with the same text"}), status_code=409)
+        elif prompt_exists_id[0]['username'] != username:
+            return func.HttpResponse(body=json.dumps({"result": False, "msg": "access denied"}), status_code=409)
         else:
-            if len(text) < 20 or len(text) > 100:
-                return func.HttpResponse(body=json.dumps({"result": False, "msg": "prompt length is <20 or > 100 characters"}), status_code=409)
-            else:
-                prompt_id_exists[0]['text'] = text
-                prompts_container.upsert_item(body=prompt_id_exists[0])
-                return func.HttpResponse(body=json.dumps({"result" : True, "msg": "OK"}), status_code=200)
+            prompts_container.delete_item(item = "{0}".format(id), partition_key = "{0}".format(id))
+            return func.HttpResponse(body=json.dumps({"result" : True, "msg": "OK"}), status_code=200)
     except exceptions.CosmosHttpResponseError as e:
             print(e.message)
             return func.HttpResponse("", status_code=404)
