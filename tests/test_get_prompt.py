@@ -20,14 +20,26 @@ class TestFunction(unittest.TestCase):
     users_container = db_client.get_container_client(config.settings['users_container'])
 
     def test_add_user(self):
-        payload = {"id": 4, "username" : "alpha" , "password": "test1234"}
+        payload = {"prompts": 3}
 
         resp = requests.get(
-                'https://coursework1-kii1u20.azurewebsites.net/api/DeletePrompt?code=TdoHDx5enN4BRLiwfvuzUf1lJqMrFi0mctIaZFIgvrgvAzFujUR0IQ==', 
+                'http://localhost:7071/api/GetPrompt', 
                 json = payload)
 
-
-        self.assertEqual({"result" : True, 'msg' : 'OK'}, resp.json())
+        print("Response: {0}".format(resp.json()))
+        self.assertEqual([
+                            {
+                                "id": "1",
+                                "text": "This prompt has to more than 20 characters",
+                                "username": "beta"
+                            },
+                            {
+                                "id": "3",
+                                "text": "This prompt has to more than 20 characters",
+                                "username": "alpha"
+                            }
+                         ]
+                         , resp.json())
 
         # all_trees = list(self.users_container.read_all_items())
         # self.assertEqual(len(all_trees),1)
