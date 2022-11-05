@@ -20,10 +20,10 @@ class TestFunction(unittest.TestCase):
     users_container = db_client.get_container_client(config.settings['users_container'])
 
     def test_add_user(self):
-        payload = {"players": ["beta", "alpha"]}
+        payload = {"word" : "Prompt", "exact" : True}
 
         resp = requests.get(
-                'https://coursework1-kii1u20.azurewebsites.net/api/GetPrompt?code=RL4-3nSRjKoZQFo_mI9Wi1ux26MmM8Owq9SvIWwkkgFvAzFuUwKsTg==', 
+                'http://localhost:7071/api/GetTextPrompt', 
                 json = payload)
 
         print("Response: {0}".format(resp.json()))
@@ -35,7 +35,7 @@ class TestFunction(unittest.TestCase):
                             },
                             {
                                 "id": "3",
-                                "text": "This prompt has to more than 20 characters",
+                                "text": "This Prompt has to more than 20 characters",
                                 "username": "beta"
                             }
                          ]
