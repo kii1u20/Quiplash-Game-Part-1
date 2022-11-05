@@ -39,7 +39,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         if n >= len(keys):
             all_prompts = list(prompts_container.query_items(query="SELECT c.id, c.text, c.username FROM c", enable_cross_partition_query = True))
             return func.HttpResponse(body=json.dumps(all_prompts), status_code=200)
-        else:# FIX: when no items are in the db, random fails. Check the lenght if keys before proceding
+        else:# FIX: may need to check that n is not negative
             random_keys = random.sample(keys, n)
             result = []
             for k in random_keys:
