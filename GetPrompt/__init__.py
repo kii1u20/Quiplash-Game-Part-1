@@ -60,4 +60,9 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             return func.HttpResponse(body=json.dumps(result), status_code=200) 
     else:
         prompt = input["players"]
-        return func.HttpResponse("", status_code=404)
+
+        result = []
+        for player in prompt:
+            get_prompts = list(prompts_container.query_items(query="SELECT c.id, c.text, c.username FROM c WHERE c.username = '{0}'".format(player), enable_cross_partition_query=True))
+            result += get_prompts
+        return func.HttpResponse(body=json.dumps(result), status_code=200)

@@ -20,7 +20,7 @@ class TestFunction(unittest.TestCase):
     users_container = db_client.get_container_client(config.settings['users_container'])
 
     def test_add_user(self):
-        payload = {"prompts": 3}
+        payload = {"players": ["beta"]}
 
         resp = requests.get(
                 'http://localhost:7071/api/GetPrompt', 
@@ -36,7 +36,7 @@ class TestFunction(unittest.TestCase):
                             {
                                 "id": "3",
                                 "text": "This prompt has to more than 20 characters",
-                                "username": "alpha"
+                                "username": "beta"
                             }
                          ]
                          , resp.json())
