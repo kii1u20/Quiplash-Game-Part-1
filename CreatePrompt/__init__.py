@@ -33,12 +33,14 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     username = prompt['username']
     password = prompt['password']
     text = prompt['text']
-    id = list(prompts_container.query_items(query="SELECT TOP 1 c.id FROM c ORDER BY c.id DESC", enable_cross_partition_query=True))
+    empty_db = list(prompts_container.query_items(query="SELECT * FROM c", enable_cross_partition_query=True))
+    # id = list(prompts_container.query_items(query="SELECT TOP 1 c.id FROM c ORDER BY c.id DESC", enable_cross_partition_query=True))
     result = {}
-    if len(id) == 0:
+    if len(empty_db) == 0:
         result['id'] = "1"
     else:
-        result['id'] = "{0}".format(int(id[0]['id']) + 1)
+        id = list(prompts_container.query_items(query="SELECT VALUE MAX(StringToNumber(c.id)) from c".format("maxID"), enable_cross_partition_query=True))
+        result['id'] = "{0}".format(id[0] + 1)
     result['username'] = username
     result['text'] = text
 

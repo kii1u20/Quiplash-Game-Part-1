@@ -20,11 +20,11 @@ class TestFunction(unittest.TestCase):
     users_container = db_client.get_container_client(config.settings['users_container'])
 
     def test_add_user(self):
-        payload = {"text" : "This Promptsssss has to more than 0 characters", "username":  "beta" , "password" : "test1234"}
+        payload = {"text" : "This Prompts ha to more tgggjan 0 chartrs", "username":  "beta" , "password" : "test1234"}
 
 
         resp = requests.get(
-                'https://coursework1-kii1u20.azurewebsites.net/api/CreatePrompt?code=42gZQ2Vvg-q9AON5QcF80P7N9XwK_Zy19TrMMKx8IXN7AzFuIVmh5w==', 
+                'http://localhost:7071/api/CreatePrompt', 
                 json = payload)
 
 

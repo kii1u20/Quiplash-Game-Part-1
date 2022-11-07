@@ -20,10 +20,10 @@ class TestFunction(unittest.TestCase):
     users_container = db_client.get_container_client(config.settings['users_container'])
 
     def test_add_user(self):
-        payload = {"word" : "programming", "exact" : False}
+        payload = {"word" : "program", "exact" : True}
 
         resp = requests.get(
-                'http://localhost:7071/api/GetTextPrompt', 
+                'https://coursework1-kii1u20.azurewebsites.net/api/GetTextPrompt?code=05HgXSdkfeMdPpNzGRC7HntMHgUUFRXY9szsd6LcAAfuAzFuhBD7MQ==', 
                 json = payload)
 
         print("Response: {0}".format(resp.json()))
