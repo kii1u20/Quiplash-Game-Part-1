@@ -41,17 +41,11 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     prompts_container = db_client.get_container_client(config.settings['prompts_container'])
 
     input = req.get_json()
-    c = not input["exact"]
-    case_sensitive = ""
-    if c == False:
-        case_sensitive = "false"
-    else:
-        case_sensitive = "true"
+    c = input["exact"]
     word = input["word"]
-
-    # prompts = list(prompts_container.query_items(
-    #     query = "SELECT c.id, c.text, c.username FROM c WHERE CONTAINS(c.text, '{0}', {1})".format(word, case_sensitive), enable_cross_partition_query=True))
-    prompts = list(prompts_container.query_items(
-        query = "SELECT c.id, c.text, c.username FROM c WHERE RegexMatch(c.text, '{0}', 'i')".format(word), enable_cross_partition_query=True))
-    print("The reposnse is: {0}".format(prompts))
-    return func.HttpResponse(body=json.dumps(prompts), status_code=200)
+    if c == True:
+        sensitive = list(prompts_container.query_items(query="SELECT c.id, c.text, c.username FROM c WHERE c.text LIKE '% {0} %' OR c.text LIKE '{0} %' OR c.text LIKE '% {0}'".format(word), enable_cross_partition_query=True))
+        return func.HttpResponse(body=json.dumps(sensitive))
+    else:
+        insensitive = list(prompts_container.query_items(query="SELECT c.id, c.text, c.username FROM c WHERE LOWER(c.text) LIKE LOWER('% {0} %') OR LOWER(c.text) LIKE LOWER('{0} %') OR LOWER(c.text) LIKE LOWER('% {0}')".format(word), enable_cross_partition_query=True))
+        return func.HttpResponse(body=json.dumps(insensitive))

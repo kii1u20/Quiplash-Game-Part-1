@@ -20,7 +20,7 @@ class TestFunction(unittest.TestCase):
     users_container = db_client.get_container_client(config.settings['users_container'])
 
     def test_add_user(self):
-        payload = {"word" : "Prompt", "exact" : True}
+        payload = {"word" : "programming", "exact" : False}
 
         resp = requests.get(
                 'http://localhost:7071/api/GetTextPrompt', 
