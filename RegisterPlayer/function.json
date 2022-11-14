@@ -6,6 +6,7 @@
       "type": "httpTrigger",
       "direction": "in",
       "name": "req",
+      "route": "player/register",
       "methods": [
         "get",
         "post"
